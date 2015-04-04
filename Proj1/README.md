@@ -36,3 +36,8 @@ Um comentário pode aparecer entre quaisquer dois tokens da linguagem. Existem
 duas formas de comentários:
 – Uma forma de comentário começaa em /* e termina em */.
 – A outra forma de comentário começa em // e termina no fim da linha.
+
+## Relatório
+
+O relatório da primeira parte do projecto pode ser encontrado em:
+https://drive.google.com/file/d/0B8BT07stj_OxRFhYWmhGVnpweWM/view?usp=sharing
