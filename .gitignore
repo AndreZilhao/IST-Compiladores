@@ -1,0 +1,9 @@
+*.o 
+*~ 
+lex.yy.* 
+parser.tab.* 
+parser.output 
+mjc
+*.zip
+
+
