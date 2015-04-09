@@ -1,4 +1,5 @@
 # Makefile
+# It's a very good tool
 
 OBJS	= main.o parser.tab.o lex.yy.o
 
