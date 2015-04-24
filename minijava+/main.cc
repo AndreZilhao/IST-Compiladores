@@ -14,6 +14,7 @@ int main(int argc, char **argv)
 	errorsL = 0;
     assert(argc == 1);
     yyparse();
+// Olá eminho 
 	if(!(errorsL || errorsS)){
 		cout << "Compiled without errors!\n";
 	} else {

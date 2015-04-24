@@ -32,81 +32,80 @@ int yylex(void);
 %%
 
 /*Definicao da gramatica*/
-Program:		MainClass ClassDecl
+Program:	MainClass ClassDecl									 {$$ =/*mk_tree_root($1, $2);*/}
 	;
 
-MainClass:		CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}'
+MainClass:	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}'    {$$ =/*mk_main_node($2,$12,$15);*/}
 	;
 
-ClassDecl: 		CLASS ID '{' VarDecl MethodDecl '}' ClassDecl
-	|			CLASS ID EXTENDS ID '{' VarDecl MethodDecl '}' ClassDecl
-	|
+ClassDecl: 	CLASS ID '{' VarDecl MethodDecl '}' ClassDecl 						 {$$ =/*mk_class_decl_node($2, $4, $5, $7); */}
+	|	CLASS ID EXTENDS ID '{' VarDecl MethodDecl '}' ClassDecl 
+	|												 {$$ = NULL;}							     ;
+
+VarDecl:	VarDecl VarDeclAux 									 {$$ =/*mk_var_decl_list_node($1,$2);*/}
+	|	VarDecl error ';' 
+	|												 {$$ = NULL;}
 	;
 
-VarDecl:		VarDecl VarDeclAux
-	|			VarDecl error ';' 
-	|			
+VarDeclAux:	Type ID ';'										 {$$ =/*mk_var_decl_node($1,$2)*/;}
 	;
 
-VarDeclAux:		Type ID ';'
+MethodDecl:     PUBLIC Type ID '(' FormalList ')' '{' VarDecl Statements RETURN Exp ';' '}' MethodDecl	 {$$ =/*mk_method_decl_node($2, $3, $5, $8, $9, $11, $14)*/;}
+	|												 {$$ = NULL;}			
 	;
 
-MethodDecl:     PUBLIC Type ID '(' FormalList ')' '{' VarDecl Statements RETURN Exp ';' '}' MethodDecl
-	|
+FormalList: 	Type ID FormalRest									 {$$ =/*mk_formal_list_node($1,$2,$3};*/}		
+	|												 {$$ = NULL;}	
 	;
 
-FormalList: 	Type ID FormalRest
-	|
+FormalRest: 	',' Type ID FormalRest									 {$$ =/*mk_formal_rest_node($2,$3,$4);*/}
+	|												 {$$ = NULL;}	
 	;
 
-FormalRest: 	',' Type ID FormalRest
-	|
+Type:		INT '[' ']'										 {$$ =/}
+	|	BOOOL											 { }
+	|	INT											 { }
+	|	ID											 { }
+
+Statements:	Statement Statements									 { }
+	|												 {$$ = NULL;}	
 	;
 
-Type:			INT '[' ']'
-	|			BOOOL
-	|			INT
-	|			ID
-
-Statements:		Statement Statements
-	|
+Statement: 	SYSTEM '.' OUT '.' PRINTLN '(' Exp ')' ';'						 { }
+	|	ID EQUALS Exp ';'									 { }
+	|	ID '[' Exp ']' EQUALS Exp ';' 								 { }
+	|	IF '(' Exp ')' Statement ELSE Statement							 { }
+	|	WHILE '(' Exp ')' Statement 								 { }
+	|	'{' Statements '}'									 { }
 	;
 
-Statement: 		SYSTEM '.' OUT '.' PRINTLN '(' Exp ')' ';'
-	|			ID EQUALS Exp ';'
-	|			ID '[' Exp ']' EQUALS Exp ';' 
-	|			IF '(' Exp ')' Statement ELSE Statement
-	|			WHILE '(' Exp ')' Statement 
-	|			'{' Statements '}'
+Exp: 		Exp AND Exp										 { }
+	|	Exp LESSTHAN Exp									 { }
+	|	Exp ADD	Exp										 { }
+	|	Exp SUB Exp										 { }
+	|	Exp MULT Exp										 { }
+	| 	INTVAL											 { }
+	|	TRUE											 { }
+	|	FALSE											 { }
+	|	ID											 { }
+	|	THIS											 { }
+	|	READERS '.' INTREADER '.' READINT '(' ')'						 { }
+	|	NEW INT '[' Exp ']'									 { }
+	|	NEW ID '(' ')'										 { }
+	|	'(' Exp ')'										 { }
+	|	NEG Exp 										 { }
+	|	Exp '.' LENGTH 										 { }
+	|	Exp '[' Exp ']'										 { }
+	|	Exp	'.' ID '(' ExpList ')'								 { }
+	|	error ';'										 { }		
 	;
 
-Exp: 			Exp AND Exp
-	|			Exp LESSTHAN Exp
-	|			Exp ADD	Exp
-	|			Exp SUB Exp
-	|			Exp MULT Exp
-	| 			INTVAL
-	|			TRUE
-	|			FALSE
-	|			ID
-	|			THIS
-	|			READERS '.' INTREADER '.' READINT '(' ')'
-	|			NEW INT '[' Exp ']'
-	|			NEW ID '(' ')'
-	|			'(' Exp ')'
-	|			NEG Exp 
-	|			Exp '.' LENGTH 
-	|			Exp '[' Exp ']'
-	|			Exp	'.' ID '(' ExpList ')'
-	|			error ';'
+ExpList:	Exp ExpRest										 { }		
+	|												 {$$ = NULL;}	
 	;
 
-ExpList:		Exp ExpRest
-	|
-	;
-
-ExpRest:		',' Exp ExpRest
-	|
+ExpRest:	',' Exp ExpRest										 { }
+	|												 {$$ = NULL;}	
 	;
 %%
 
